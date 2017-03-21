@@ -41,7 +41,7 @@ const files = [
   {
     format: 'umd',
     ext: '.js',
-    presets: [['latest', {es2015: {modules: 'umd'}}]],
+    presets: [['latest', {es2015: {modules: false}}]],
     plugins: [], //['transform-runtime'],
     output: 'browser',
     moduleName: 'p2m.push.socketIo.client',
@@ -49,7 +49,7 @@ const files = [
   {
     format: 'umd',
     ext: '.min.js',
-    presets: [['latest', {es2015: {modules: 'umd'}}]],
+    presets: [['latest', {es2015: {modules: false}}]],
     plugins: [],//['transform-runtime'],
     output: 'browser',
     moduleName: 'p2m.push.socketIo.client',
@@ -65,8 +65,9 @@ promise = promise.then(() => del(['build/*']));
 // Compile source code into a distributable format with Babel
 for (const file of files) {
   promise = promise.then(() => rollup.rollup({
-    entry: 'src/socket-io-client.js',
-    external: file.format === 'umd' ? [] : Object.keys(pkg.dependencies),
+    entry: 'src/push-client.js',
+    //external: file.format === 'umd' ? [] : Object.keys(pkg.dependencies),
+    external: Object.keys(pkg.dependencies),
     plugins: [
       ...file.format === 'umd' ? [nodeResolve({browser: true}), commonjs()] : [],
       babel({
@@ -79,7 +80,29 @@ for (const file of files) {
       ...file.minify ? [uglify()] : [],
     ],
   }).then(bundle => bundle.write({
-    dest: `build/${file.output || 'main'}${file.ext}`,
+    dest: `build/${file.output || 'main'}/message-client${file.ext}`,
+    format: file.format,
+    sourceMap: !file.minify,
+    exports: 'named',
+    moduleName: file.moduleName,
+  })));
+  promise = promise.then(() => rollup.rollup({
+    entry: 'src/push-client-socketio.js',
+    //external: file.format === 'umd' ? [] : Object.keys(pkg.dependencies),
+    external: Object.keys(pkg.dependencies),
+    plugins: [
+      ...file.format === 'umd' ? [nodeResolve({browser: true}), commonjs()] : [],
+      babel({
+        babelrc: false,
+        exclude: 'node_modules/**',
+        runtimeHelpers: false,
+        presets: file.presets,
+        plugins: file.plugins,
+      }),
+      ...file.minify ? [uglify()] : [],
+    ],
+  }).then(bundle => bundle.write({
+    dest: `build/${file.output || 'main'}/message-client-socketio${file.ext}`,
     format: file.format,
     sourceMap: !file.minify,
     exports: 'named',

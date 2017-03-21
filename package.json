@@ -1,10 +1,10 @@
 {
-  "name": "p2m-push-socket-io-client",
+  "name": "p2m-message-client",
   "version": "1.0.0",
-  "description": "Socket-io plugin for p2m push service.",
+  "description": "Client for p2m message service.",
   "main": "main.js",
   "browser": "browser.js",
-  "repository": "https://github.com/colin-han/p2m-push-socket-io-client.git",
+  "repository": "https://github.com/colin-han/p2m-message-client.git",
   "author": "Colin Han <biz@colinhan.info>",
   "license": "MIT",
   "dependencies": {
