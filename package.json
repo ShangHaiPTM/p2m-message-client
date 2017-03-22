@@ -1,4 +1,7 @@
 {
+  "_moduleName": "p2m.message.client",
+  "_entries": ["message-client"],
+
   "name": "p2m-message-client",
   "version": "1.0.0",
   "description": "Client for P2M message service.",

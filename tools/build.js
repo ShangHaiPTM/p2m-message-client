@@ -29,22 +29,13 @@ const files = [
       //'transform-runtime',
     ],
   },
-  // {
-  //   format: 'es',
-  //   ext: '.mjs',
-  //   presets: ['es2016', 'es2017'],
-  //   plugins: [
-  //     'external-helpers',
-  //     //'transform-runtime',
-  //   ],
-  // },
   {
     format: 'umd',
     ext: '.js',
     presets: [['latest', {es2015: {modules: false}}]],
     plugins: [], //['transform-runtime'],
     output: 'browser',
-    moduleName: 'p2m.message.client',
+    moduleName: pkg._moduleName,
   },
   {
     format: 'umd',
@@ -52,7 +43,7 @@ const files = [
     presets: [['latest', {es2015: {modules: false}}]],
     plugins: [],//['transform-runtime'],
     output: 'browser',
-    moduleName: 'p2m.message.client',
+    moduleName: pkg._moduleName,
     minify: true,
   },
 ];
@@ -64,28 +55,30 @@ promise = promise.then(() => del(['build/*']));
 
 // Compile source code into a distributable format with Babel
 for (const file of files) {
-  promise = promise.then(() => rollup.rollup({
-    entry: 'src/message-client.js',
-    //external: file.format === 'umd' ? [] : Object.keys(pkg.dependencies),
-    external: Object.keys(pkg.dependencies),
-    plugins: [
-      ...file.format === 'umd' ? [nodeResolve({browser: true}), commonjs()] : [],
-      babel({
-        babelrc: false,
-        exclude: 'node_modules/**',
-        runtimeHelpers: false,
-        presets: file.presets,
-        plugins: file.plugins,
-      }),
-      ...file.minify ? [uglify()] : [],
-    ],
-  }).then(bundle => bundle.write({
-    dest: `build/${file.output || 'main'}/message-client${file.ext}`,
-    format: file.format,
-    sourceMap: !file.minify,
-    exports: 'named',
-    moduleName: file.moduleName,
-  })));
+  for (const entry of pkg._entries) {
+    promise = promise.then(() => rollup.rollup({
+      entry: `src/${entry}.js`,
+      //external: file.format === 'umd' ? [] : Object.keys(pkg.dependencies),
+      external: Object.keys(pkg.dependencies),
+      plugins: [
+        ...file.format === 'umd' ? [nodeResolve({browser: true}), commonjs()] : [],
+        babel({
+          babelrc: false,
+          exclude: 'node_modules/**',
+          runtimeHelpers: false,
+          presets: file.presets,
+          plugins: file.plugins,
+        }),
+        ...file.minify ? [uglify()] : [],
+      ],
+    }).then(bundle => bundle.write({
+      dest: `build/${file.output || 'main'}/${entry}${file.ext}`,
+      format: file.format,
+      sourceMap: !file.minify,
+      exports: 'named',
+      moduleName: file.moduleName,
+    })));
+  }
 }
 
 // Copy package.json and LICENSE.txt
@@ -95,6 +88,9 @@ promise = promise.then(() => {
   delete pkg.scripts;
   delete pkg.eslintConfig;
   delete pkg.babel;
+  Object.keys(pkg)
+      .filter(n=>n.match(/^_.*$/))
+      .map(n=>{delete pkg[n]});
   fs.writeFileSync('build/package.json', JSON.stringify(pkg, null, '  '), 'utf-8');
 });
 
