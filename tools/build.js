@@ -44,7 +44,7 @@ const files = [
     presets: [['latest', {es2015: {modules: false}}]],
     plugins: [], //['transform-runtime'],
     output: 'browser',
-    moduleName: 'p2m.push.socketIo.client',
+    moduleName: 'p2m.message.client',
   },
   {
     format: 'umd',
@@ -52,7 +52,7 @@ const files = [
     presets: [['latest', {es2015: {modules: false}}]],
     plugins: [],//['transform-runtime'],
     output: 'browser',
-    moduleName: 'p2m.push.socketIo.client',
+    moduleName: 'p2m.message.client',
     minify: true,
   },
 ];
