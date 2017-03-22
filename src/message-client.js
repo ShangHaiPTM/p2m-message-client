@@ -85,7 +85,7 @@ function onChannelOpenMessage(message, channel) {
 }
 
 export function start(options) {
-  console.log('[PUSH-CLIENT] Starting service with options', options);
+  console.log('[MSG-CLIENT] Starting service with options', options);
   isStarted = true;
   Object.values(channels).map(c=>c.start(options));
 
@@ -99,12 +99,14 @@ export function stop() {
 }
 
 export function messages(options) {
-  console.log('[PUSH-CLIENT] Get messages...');
+  console.log('[MSG-CLIENT] Get messages...');
+  //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '?userId=' + _options.userId;
 
   if (options) {
     let {page, pageSize} = options;
 
+    //noinspection EqualityComparisonWithCoercionJS
     if (page != null && pageSize != null) {
       url += `&page=${page}&pageSize=${pageSize}`;
     }
@@ -128,19 +130,21 @@ export function messages(options) {
   }).then(res => {
     if (!res.ok) {
       let err = `Update messages failed with err: ${res.status} - ${res.statusText}`;
-      console.error('[PUSH-CLIENT] ' + err);
+      console.error('[MSG-CLIENT] ' + err);
       throw Error(err)
     }
 
     return res.json();
   }).then(result => {
-    console.log('[PUSH-CLIENT] Get messages success. Got ' + result.messages.length + ' messages.');
+    console.log('[MSG-CLIENT] Get messages success. Got ' + result.messages.length + ' messages.');
     let displayMessages = result.messages;
+    //noinspection JSUnresolvedVariable
     let unreadMessages = result.messages.filter(m => !m.isRead);
     if (filter === 'unread') {
       displayMessages = unreadMessages;
     }
 
+    //noinspection EqualityComparisonWithCoercionJS
     if (_unreadCount != result.count) {
       _unreadCount = result.count;
       emit('unreadChange', _unreadCount);
@@ -153,8 +157,10 @@ export function messages(options) {
     };
   });
 }
+//noinspection JSUnusedGlobalSymbols
 export function unreadCount() {
-  console.log('[PUSH-CLIENT] Get unread message count...');
+  console.log('[MSG-CLIENT] Get unread message count...');
+  //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/unread-count?userId=' + _options.userId;
 
   return fetch(url, {
@@ -167,13 +173,13 @@ export function unreadCount() {
   }).then(res => {
     if (!res.ok) {
       let err = `Get unread message count failed with err: ${res.status} - ${res.statusText}`;
-      console.log('[PUSH-CLIENT] ' + err);
+      console.log('[MSG-CLIENT] ' + err);
       throw Error(err)
     }
 
     return res.json();
   }).then(result=>{
-    if (_unreadCount != result.count) {
+    if (_unreadCount !== result.count) {
       _unreadCount = result.count;
       emit('unreadChange', _unreadCount);
     }
@@ -182,8 +188,40 @@ export function unreadCount() {
   });
 }
 
+//noinspection JSUnusedGlobalSymbols
+export function delivered(pushId) {
+  console.log(`[MSG-CLIENT] Set message {pushId: ${pushId}} delivered...`);
+  //noinspection JSUnresolvedVariable
+  let url = _options.serverUrl + _options.path + '/delivered';
+  fetch(url, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      pushId: message.pushId
+    }),
+    credentials: 'include',
+  }).then(res => {
+    if (!res.ok) {
+      let err = `Set message delivered failed with err: ${res.status} - ${res.statusText}`;
+      console.log('[MSG-CLIENT] ' + err);
+      throw Error(err)
+    }
+
+    return res.json();
+  }).then(function(result) {
+    if(result.success) {
+      console.log(`[MSG-CLIENT] Set message delivered failed with err: ${result.status} - ${result.statusText}`);
+    }
+    return result;
+  });
+}
+//noinspection JSUnusedGlobalSymbols
 export function read(sendId) {
-  console.log(`[PUSH-CLIENT] Set message {sendId: ${sendId}} read...`);
+  console.log(`[MSG-CLIENT] Set message {sendId: ${sendId}} read...`);
+  //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/read';
 
   return fetch(url, {
@@ -199,7 +237,7 @@ export function read(sendId) {
   }).then(res => {
     if (!res.ok) {
       let err = `Set message read failed with err: ${res.status} - ${res.statusText}`;
-      console.log('[PUSH-CLIENT] ' + err);
+      console.log('[MSG-CLIENT] ' + err);
       throw Error(err)
     }
 
@@ -212,8 +250,10 @@ export function read(sendId) {
     return result;
   });
 }
+//noinspection JSUnusedGlobalSymbols
 export function delay(sendId, schedule) {
-  console.log(`[PUSH-CLIENT] Set message {sendId: ${sendId}} delay to ${schedule}...`);
+  console.log(`[MSG-CLIENT] Set message {sendId: ${sendId}} delay to ${schedule}...`);
+  //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/delay';
 
   return fetch(url, {
@@ -229,7 +269,7 @@ export function delay(sendId, schedule) {
   }).then(res => {
     if (!res.ok) {
       let err = `Set message read failed with err: ${res.status} - ${res.statusText}`;
-      console.log('[PUSH-CLIENT] ' + err);
+      console.log('[MSG-CLIENT] ' + err);
       return {success: false, error: err};
     }
 
@@ -245,8 +285,9 @@ export function delay(sendId, schedule) {
 }
 
 export function register(userId, deviceId, channel) {
-  console.log('[PUSH-CLIENT] Register device. ', {userId, deviceId, channel});
+  console.log('[MSG-CLIENT] Register device. ', {userId, deviceId, channel});
 
+  //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/register';
 
   return fetch(url, {
@@ -262,7 +303,7 @@ export function register(userId, deviceId, channel) {
   }).then(res => {
     if (!res.ok) {
       let err = `Register device failed with err: ${res.status} - ${res.statusText}`;
-      console.log('[PUSH-CLIENT] ' + err);
+      console.log('[MSG-CLIENT] ' + err);
       throw Error(err)
     }
 
