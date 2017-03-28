@@ -200,7 +200,7 @@ export function delivered(pushId) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      pushId: message.pushId
+      pushId: pushId
     }),
     credentials: 'include',
   }).then(res => {
