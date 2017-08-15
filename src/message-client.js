@@ -69,7 +69,13 @@ function onChannelDisconnect(channel) {
   emit('disconnect', connectionCount, channelId);
 }
 function onChannelMessage(message, channel) {
-  let channelId = channel.channelId;
+  let channelId;
+  if(typeof(channel) == "undefined") {
+    channelId = 'jpush';
+  }
+  else {
+    channelId = channel.channelId;
+  }
   let sendId = message.sendId;
 
   if (dispatchedMessage[sendId]) return;
@@ -79,7 +85,13 @@ function onChannelMessage(message, channel) {
   emit('unreadChange', _unreadCount++);
 }
 function onChannelOpenMessage(message, channel) {
-  let channelId = channel.channelId;
+  let channelId;
+  if(typeof(channel) == "undefined") {
+    channelId = 'jpush';
+  }
+  else {
+    channelId = channel.channelId;
+  }
 
   emit('openMessage', message, channelId);
 }
@@ -107,8 +119,8 @@ export function messages(options) {
     let {page, pageSize} = options;
 
     //noinspection EqualityComparisonWithCoercionJS
-    if (page != null && pageSize != null) {
-      url += `&page=${page}&pageSize=${pageSize}`;
+    if (page != null) {// && pageSize != null) {
+      url += '&page=' + page;// + '&pageSize=' + pageSize;
     }
   }
 
