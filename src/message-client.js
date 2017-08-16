@@ -107,8 +107,8 @@ export function messages(options) {
     let {page, pageSize} = options;
 
     //noinspection EqualityComparisonWithCoercionJS
-    if (page != null && pageSize != null) {
-      url += `&page=${page}&pageSize=${pageSize}`;
+    if (page != null) {// && pageSize != null) {
+      url += '&page=' + page;// + '&pageSize=' + pageSize;
     }
   }
 
