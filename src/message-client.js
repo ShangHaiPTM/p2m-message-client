@@ -69,13 +69,7 @@ function onChannelDisconnect(channel) {
   emit('disconnect', connectionCount, channelId);
 }
 function onChannelMessage(message, channel) {
-  let channelId;
-  if(typeof(channel) == "undefined") {
-    channelId = 'jpush';
-  }
-  else {
-    channelId = channel.channelId;
-  }
+  let channelId = channel.channelId;
   let sendId = message.sendId;
 
   if (dispatchedMessage[sendId]) return;
@@ -85,13 +79,7 @@ function onChannelMessage(message, channel) {
   emit('unreadChange', _unreadCount++);
 }
 function onChannelOpenMessage(message, channel) {
-  let channelId;
-  if(typeof(channel) == "undefined") {
-    channelId = 'jpush';
-  }
-  else {
-    channelId = channel.channelId;
-  }
+  let channelId = channel.channelId;
 
   emit('openMessage', message, channelId);
 }
