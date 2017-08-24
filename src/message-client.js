@@ -33,6 +33,7 @@ export function off(event, callback) {
   if (list && list.length) {
     events[event] = list.filter(e=>e !== callback);
   }
+  return this;
 }
 function emit(event, ...params) {
   let list = events[event];
