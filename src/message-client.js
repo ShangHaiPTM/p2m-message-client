@@ -64,6 +64,7 @@ function onChannelConnect(channel) {
 function onChannelDisconnect(channel) {
   let channelId = channel.channelId;
   delete connections[channelId];
+  delete channels[channelId];
   let connectionCount = Object.keys(connections).length;
 
   emit('disconnect', connectionCount, channelId);
@@ -93,7 +94,7 @@ export function start(options) {
   return this;
 }
 export function stop() {
-  channels.map(c=>c.stop());
+  Object.values(channels).map(c=>c.stop());
   isStarted = false;
   return this;
 }
