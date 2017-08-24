@@ -4,7 +4,7 @@
     "message-client"
   ],
   "name": "p2m-message-client",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Client for P2M message service.",
   "main": "main/message-client.js",
   "browser": "browser/message-client.js",
