@@ -28,6 +28,12 @@ export function on(event, callback) {
   }
   return this;
 }
+export function off(event, callback) {
+  let list = events[event];
+  if (list && list.length) {
+    events[event] = list.filter(e=>e !== callback);
+  }
+}
 function emit(event, ...params) {
   let list = events[event];
   if (list) {
