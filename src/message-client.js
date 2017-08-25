@@ -99,8 +99,8 @@ export function start(options) {
   _options = options;
   return this;
 }
-export function stop() {
-  Object.values(channels).map(c=>c.stop());
+export function stop(options) {
+  Object.values(channels).map(c=>c.stop(options));
   isStarted = false;
   return this;
 }
@@ -287,6 +287,32 @@ export function delay(sendId, schedule) {
       emit('unreadChange', _unreadCount);
     }
 
+    return result;
+  });
+}
+
+export function unRegister(userId, deviceId, channel) {
+  console.log('[MSG-CLIENT] unRegister device. ', { userId: userId, deviceId: deviceId, channel: channel });
+  var url = _options.serverUrl + _options.path + '/unregister';
+  return fetch(url, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userId: userId, deviceId: deviceId, channel: channel
+    }),
+    credentials: 'include'
+  }).then(function (res) {
+    if (!res.ok) {
+      var err = 'unRegister device failed with err: ' + res.status + ' - ' + res.statusText;
+      console.log('[MSG-CLIENT] ' + err);
+      throw Error(err);
+    }
+
+    return res.json();
+  }).then(function (result) {
     return result;
   });
 }
