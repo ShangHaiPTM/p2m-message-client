@@ -44,7 +44,12 @@ function emit(event, ...params) {
 
 export function use(channel) {
   if (channels[channel.channelId]) {
-    throw Error('多个通道不能使用相同的通道id。');
+    if (channels[channel.channelId] !== channel) {
+      throw Error('多个通道不能使用相同的通道id。');
+    } else {
+      // The channel was added. Do nothing.
+      return this;
+    }
   }
 
   channels[channel.channelId] = channel;
