@@ -113,6 +113,9 @@ export function stop(options) {
 
 export function messages(options) {
   console.log('[MSG-CLIENT] Get messages...');
+  if (!isStarted) {
+    return [];
+  }
   //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '?userId=' + _options.userId;
 
@@ -173,6 +176,9 @@ export function messages(options) {
 //noinspection JSUnusedGlobalSymbols
 export function unreadCount() {
   console.log('[MSG-CLIENT] Get unread message count...');
+  if (!isStarted) {
+    return 0;
+  }
   //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/unread-count?userId=' + _options.userId;
 
@@ -204,6 +210,9 @@ export function unreadCount() {
 //noinspection JSUnusedGlobalSymbols
 export function delivered(pushId) {
   console.log(`[MSG-CLIENT] Set message {pushId: ${pushId}} delivered...`);
+  if (!isStarted) {
+    throw new Error('Please start client firstly.');
+  }
   //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/delivered';
   fetch(url, {
@@ -234,6 +243,9 @@ export function delivered(pushId) {
 //noinspection JSUnusedGlobalSymbols
 export function read(sendId) {
   console.log(`[MSG-CLIENT] Set message {sendId: ${sendId}} read...`);
+  if (!isStarted) {
+    throw new Error('Please start client firstly.');
+  }
   //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/read';
 
@@ -266,6 +278,9 @@ export function read(sendId) {
 //noinspection JSUnusedGlobalSymbols
 export function delay(sendId, schedule) {
   console.log(`[MSG-CLIENT] Set message {sendId: ${sendId}} delay to ${schedule}...`);
+  if (!isStarted) {
+    throw new Error('Please start client firstly.');
+  }
   //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/delay';
 
@@ -299,6 +314,10 @@ export function delay(sendId, schedule) {
 
 export function unRegister(userId, deviceId, channel) {
   console.log('[MSG-CLIENT] unRegister device. ', { userId: userId, deviceId: deviceId, channel: channel });
+  if (!isStarted) {
+    throw new Error('Please start client firstly.');
+  }
+
   var url = _options.serverUrl + _options.path + '/unregister';
   return fetch(url, {
     method: 'post',
@@ -325,6 +344,9 @@ export function unRegister(userId, deviceId, channel) {
 
 export function register(userId, deviceId, channel) {
   console.log('[MSG-CLIENT] Register device. ', {userId, deviceId, channel});
+  if (!isStarted) {
+    throw new Error('Please start client firstly.');
+  }
 
   //noinspection JSUnresolvedVariable
   let url = _options.serverUrl + _options.path + '/register';
