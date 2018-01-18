@@ -31,7 +31,7 @@ export function on(event, callback) {
 export function off(event, callback) {
   let list = events[event];
   if (list && list.length) {
-    events[event] = list.filter(e=>e !== callback);
+    events[event] = list.filter(e => e.cb !== callback);
   }
   return this;
 }
