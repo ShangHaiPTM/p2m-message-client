@@ -234,7 +234,7 @@ export function delivered(pushId) {
 
     return res.json();
   }).then(function(result) {
-    if(result.success) {
+    if(!result.success) {
       console.log(`[MSG-CLIENT] Set message delivered failed with err: ${result.status} - ${result.statusText}`);
     }
     return result;
