@@ -45,7 +45,15 @@ function emit(event, ...params) {
 export function use(channel) {
   if (channels[channel.channelId]) {
     if (channels[channel.channelId] !== channel) {
-      throw Error('多个通道不能使用相同的通道id。');
+      let oldChannel = channels[channel.channelId];
+      oldChannel.off('connect', onChannelConnect)
+        .off('message', onChannelMessage)
+        .off('openMessage', onChannelOpenMessage)
+        .off('disconnect', onChannelDisconnect);
+
+      if (isStarted) {
+        oldChannel.stop();
+      }
     } else {
       // The channel was added. Do nothing.
       return this;
