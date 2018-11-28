@@ -382,8 +382,8 @@ export function register(userId, deviceId, channel) {
   });
 }
 
-export function deleteMessage(sendId) {
-  console.log(`[MSG-CLIENT] Set message {sendId: ${sendId}} delete...`);
+export function deleteMessage(messageId) {
+  console.log(`[MSG-CLIENT] Set message {messageId: ${messageId}} delete...`);
   if (!isStarted) {
       throw new Error('Please start client firstly.');
   }
@@ -397,7 +397,7 @@ export function deleteMessage(sendId) {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            sendId
+            messageId
         }),
         credentials: 'include'
     }).then(res => {
