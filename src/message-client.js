@@ -381,3 +381,60 @@ export function register(userId, deviceId, channel) {
     return result;
   });
 }
+
+export function deleteMessage(messageId) {
+  console.log(`[MSG-CLIENT] Set message {messageId: ${messageId}} delete...`);
+  if (!isStarted) {
+      throw new Error('Please start client firstly.');
+  }
+  //noinspection JSUnresolvedVariable
+  let url = _options.serverUrl + _options.path + '/delete';
+
+  return fetch(url, {
+        method: 'post',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            messageId
+        }),
+        credentials: 'include'
+    }).then(res => {
+        if (!res.ok) {
+            let err = `Set message delete failed with err: ${res.status} - ${res.statusText}`;
+            console.log('[MSG-CLIENT] ' + err);
+            throw Error(err);
+        }
+        return res.json();
+    }).then(function (result) {
+        return result;
+    });
+}
+
+export function clearAllMessage() {
+  console.log(`[MSG-CLIENT] Set clear all messages`);
+  if (!isStarted) {
+    throw new Error('Please start client firstly.');
+  }
+  //noinspection JSUnresolvedVariable
+  let url = _options.serverUrl + _options.path + '/clearAll';
+
+  return fetch(url, {
+    method: 'post',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  }).then(res => {
+    if (!res.ok) {
+      let err = `Set clear all messages failed with err: ${res.status} - ${res.statusText}`;
+      console.log('[MSG-CLIENT] ' + err);
+      throw Error(err);
+    }
+    return res.json();
+  }).then(function (result) {
+    return result;
+  });
+}
